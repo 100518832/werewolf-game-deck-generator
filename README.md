@@ -10,3 +10,10 @@ This script includes the following features:
 
 The output is a tuple contining a list of the deck roles, and the score of the deck. 
 
+There are 4 dictonaries within the ww.py script
+
+``` 
+lfoahfka
+
+```
+
