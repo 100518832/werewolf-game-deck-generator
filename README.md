@@ -21,9 +21,9 @@ threshold = 1 # variable
 deck = card_selection(10,0,1, 'villager', 'villager', 'werewolf', 'seer')
 >>> (['villager', 'villager', 'werewolf', 'seer', 'sorceress', 'villager', 'diseased', 'cupid', 'cult_leader', 'lycan'], 1)
 ```
-The output is a tuple contining a list of the deck roles, and the score of the deck. As you can see our optional string arguments passed to the function ```card_selection``` were ``` 'villager', 'villager', 'werewolf', 'seer' ``` , and therefore these roles were forced into the deck; however, forced roles are added to the deck before the selection process. This means that you can bypass roles that normally can not be played togther as long as they are both forced to the ```deck``` as optional string arguments.  
+The output is a tuple containing a list of the deck roles, and the score of the deck. As you can see our optional string arguments passed to the function ```card_selection``` were ``` 'villager', 'villager', 'werewolf', 'seer' ``` , and therefore these roles were forced into the deck; however, forced roles are added to the deck before the selection process. This means that you can bypass roles that normally can not be played together as long as they are both forced to the ```deck``` as optional string arguments.  
 
-There are 4 dictonaries within the ww.py script:
+There are 4 dictionaries within the ww.py script:
 
 ```
 card_points = {'good':{'villager':1, 'witch':4, 'pacifist':-1, 'p.i':3, 'prince':3, 'seer':7, 'spellcaster':1, 'tough_guy':3, 'lycan':-1, 'mason':2, 'old_hag':1, 'mayor':2, 'troublemaker':-3, 
@@ -46,9 +46,9 @@ card_exclusions = {'villager':[], 'witch':[], 'pacifist':['village_idiot'], 'p.i
                 'werewolf':['vampire'], 'wolf_cub':['vampire'], 'sorceress':['aura_seer'], 'tanner':[], 'vampire':['werewolf','wolf_cub','cursed','diseased','minion'], 'cursed':['vampire'], 'lone_wolf':[], 'minion':['vampire']
                 }
 ```
-The dict ```card_points```  contains a nested dictonary of good and bad roles, to define the teams. Every role card you wish to play with, or have, should be in this dictonary at some point (and the other 3 too). If you want to break up the roles into more teams; some ```bad``` roles are actually against each other ```bad``` roles (i.e, vampires vs werewolfs, or lone wolf vs werewolfs). This dictonary is used to keep track of all possible cards, and their point values for calculating the deck value.
+The dict ```card_points```  contains a nested dictionary of good and bad roles, to define the teams. Every role card you wish to play with, or have, should be in this dictionary at some point (and the other 3 too). If you want to break up the roles into more teams; some ```bad``` roles are actually against each other ```bad``` roles (i.e, vampires vs werewolves, or lone wolf vs werewolves). This dictionary is used to keep track of all possible cards, and their point values for calculating the deck value.
 
-If you wish to further organize this dictonary into more nested dictonaries please notw you will have to adjust the following lines:
+If you wish to further organize this dictionary into more nested dictionaries please know you will have to adjust the following lines:
 
 ```
 good_roles = list(card_points['good'].copy().keys())
@@ -57,16 +57,15 @@ roles = bad_roles + good_roles
 ```
 The dict ```card_limits``` controls how many of each role can be in a deck at a single time (this can be overridden with forced roles). As such, cards you do not have, or do not want to play with, should have a value of zero. Cards with a value of zero will not be added to the deck.
 
-The dict ```card_inclusions``` is more complicated than the other. This dictonary ensures that if a role that has be selected as a candiate to be added to the deck, that either the other cards required to be played are either already in the deck, or can be added to the deck (given their is room, and no exclusions apply to the cards to be included). In this dictonary the keys are the candiated card we are going to add, and the items is a list of lists. The reason their are nested lists, is that a single card may require two roles to be added, or only one other role to be added. 
+The dict ```card_inclusions``` is more complicated than the other. This dictionary ensures that if a role that has be selected as a candidate to be added to the deck, that either the other cards required to be played are either already in the deck, or can be added to the deck (given their is room, and no exclusions apply to the cards to be included). In this dictionary the keys are the candidate card we are going to add, and the items is a list of lists. The reason there are nested lists, is that a single card may require two roles to be added, or only one other role to be added. 
 
 Lets use an example:
 
 ```
 'apprentice_seer':[['seer'],['aura_seer']], 'aura_seer':[[]]
 ```
-The above snipet is from the ```card_inclusions``` dict, and shows that the apprentice_seer key has a list as an item, if we look inside this list we see that there are two lists. So the apprentice_seer, either requires that the aura_seer or seer be in, or added, to the deck; however; the aura_seer, does not require any other cards to be added.
+The above snippet is from the ```card_inclusions``` dict, and shows that the apprentice_seer key has a list as an item, if we look inside this list we see that there are two lists. So the apprentice_seer, either requires that the aura_seer or seer be in, or added, to the deck; however; the aura_seer, does not require any other cards to be added.
 
 The final dict ``` card_exclusions ``` is simple. The key corresponds to the candidate role selected, and the item is a list of cards, that can not already be in the deck if this card is to be added. 
 
-Feel free to add your own cards to each of the dictonaries, your own limits, exclusions, or inclusions. 
-
+Feel free to add your own cards to each of the dictionaries, your own limits, exclusions, or inclusions. 
