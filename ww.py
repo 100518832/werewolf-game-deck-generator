@@ -20,9 +20,9 @@ card_exclusions = {'villager':[], 'witch':[], 'pacifist':['village_idiot'], 'p.i
                 'werewolf':['vampire'], 'wolf_cub':['vampire'], 'sorceress':['aura_seer'], 'tanner':[], 'vampire':['werewolf','wolf_cub','cursed','diseased','minion'], 'cursed':['vampire'], 'lone_wolf':[], 'minion':['vampire']
                 }
 
-n_people = 10
-target = 0
-threshold = 1
+n_people = 10 # variable
+target = 0 # variable
+threshold = 1 # variable
 good_roles = list(card_points['good'].copy().keys())
 bad_roles = list(card_points['bad'].copy().keys())
 roles = bad_roles + good_roles
