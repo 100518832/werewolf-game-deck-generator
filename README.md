@@ -20,7 +20,6 @@ threshold = 1 # variable
 
 5) A list of strings, ```black_listed```, is a list that is passed to the main function that ensures the roles inside the list are not added
 
-6) The user can pass a variable number of optional strings to the card_selection function to force a certain number of roles into the deck
 ```
 forced_roles = ['villager','villager','werewolf','seer']
 black_listed = ['lone_wolf','cub_wolf']
