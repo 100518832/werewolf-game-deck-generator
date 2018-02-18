@@ -26,8 +26,10 @@ threshold = 1 # variable
 good_roles = list(card_points['good'].copy().keys())
 bad_roles = list(card_points['bad'].copy().keys())
 roles = bad_roles + good_roles
+forced_roles = []
+black_listed = []
 
-def card_selection(n_people, target_range, threshold, *argv): # argv takes optional string arguments for specified cards we want
+def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
 
     deck_points = None
     target_range = list(range(target-threshold,target+threshold+1))
@@ -36,7 +38,9 @@ def card_selection(n_people, target_range, threshold, *argv): # argv takes optio
 
         deck = []
         
-        for forced_role in argv:
+        for forced_role in forced_roles:
+            if forced_role in black_listed:
+                print('warning - forced role is also black listed')
             
             deck.append(forced_role)
 
@@ -44,6 +48,8 @@ def card_selection(n_people, target_range, threshold, *argv): # argv takes optio
 
             role_error = False
             role = random.choice(roles)
+            if role in black_listed:
+                continue
 
             if deck.count(role) == card_limits[role]: # if the # unique roles in the deck are equal too the role limit, then we can can not add this card
                 
@@ -108,9 +114,9 @@ def card_selection(n_people, target_range, threshold, *argv): # argv takes optio
 
 def main():
     
-    global n_people, target, threshold, roles, good_roles, bad_roles
+    global n_people, target, threshold, roles, good_roles, bad_roles, forced_roles, black_listed
     
-    formation = card_selection(n_people, target, threshold, 'villager', 'villager', 'villager','werewolf','werewolf')
+    formation = card_selection(n_people, target, threshold, forced_roles, black_listed)
     
     print (formation)
     
