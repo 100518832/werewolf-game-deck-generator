@@ -15,10 +15,16 @@ target = 0 # variable
 threshold = 1 # variable
 ```
   b) Each role card has a given int point value which can be negative or positive; the sum the points in the deck should equal the target
-  
-4) The user can pass a variable number of optional strings to the card_selection function to force a certain number of roles into the deck
+ 
+4) A list of strings, ```forced_roles```, is a list that is passed to the main function that ensures the roles inside the list are added 
+
+5) A list of strings, ```black_listed```, is a list that is passed to the main function that ensures the roles inside the list are not added
+
+6) The user can pass a variable number of optional strings to the card_selection function to force a certain number of roles into the deck
 ```
-deck = card_selection(10,0,1, 'villager', 'villager', 'werewolf', 'seer')
+forced_roles = ['villager','villager','werewolf','seer']
+black_listed = ['lone_wolf','cub_wolf']
+deck = card_selection(10,0,1, forced_roles, black_listed)
 >>> (['villager', 'villager', 'werewolf', 'seer', 'sorceress', 'villager', 'diseased', 'cupid', 'cult_leader', 'lycan'], 1)
 ```
 The output is a tuple containing a list of the deck roles, and the score of the deck. As you can see our optional string arguments passed to the function ```card_selection``` were ``` 'villager', 'villager', 'werewolf', 'seer' ``` , and therefore these roles were forced into the deck; however, forced roles are added to the deck before the selection process. This means that you can bypass roles that normally can not be played together as long as they are both forced to the ```deck``` as optional string arguments.  
