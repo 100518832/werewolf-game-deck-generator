@@ -1,7 +1,9 @@
-import random
+
 from flask import Flask
 from flask import jsonify
+
 app = Flask(__name__)
+import random
 
 card_points = {'good':{'villager':1, 'witch':4, 'pacifist':-1, 'p.i':3, 'prince':3, 'seer':7, 'spellcaster':1, 'tough_guy':3, 'lycan':-1, 'mason':2, 'old_hag':1, 'mayor':2, 'troublemaker':-3, 
                        'village_idiot':2, 'apprentice_seer':4, 'aura_seer':3, 'bodyguard':3, 'cult_leader':1, 'cupid':-3, 'diseased':3, 'doppelganger':-2, 'drunk':4, 'ghost':2, 'hunter':3 }, 
@@ -26,11 +28,6 @@ card_exclusions = {'villager':[], 'witch':[], 'pacifist':['village_idiot'], 'p.i
 # n_people = 10 # variable, number of players, or cards in the deck
 # target = 0 # variable, the target point value of the returned deck
 # threshold = 1 # variable, the 'margin' of freedom for returned deck values
-
-good_roles = list(card_points['good'].copy().keys())
-bad_roles = list(card_points['bad'].copy().keys())
-roles = bad_roles + good_roles
-
 
 @app.route('/deck/<int:n_people>/<int:target>/<int:threshold>/<string:forced_roles>/<string:black_listed>')
 def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
