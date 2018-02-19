@@ -1,4 +1,5 @@
 import random
+import json
 from flask import Flask
 app = Flask(__name__)
 
@@ -113,7 +114,7 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
 
                 deck_points = deck_points + card_points['good'][card]
 
-    return deck
+    return json.loads(deck)
 
 
 @app.route('/roles')
@@ -121,7 +122,7 @@ def roles():
     
     global card_points
     
-    return card_points
+    return json.loads(card_points)
     
     
     
