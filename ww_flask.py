@@ -35,6 +35,7 @@ roles = bad_roles + good_roles
 @app.route('/deck/<int:n_people>/<int:target>/<int:threshold>/<string:forced_roles>/<string:black_listed>')
 def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
     
+    global card_exclusions, card_inclusions, card_limits, card_points, good_roles, bad_roles, roles
     forced_roles = forced_roles.split(' ')
     black_listed = black_listed.split(' ')
 
