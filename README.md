@@ -1,4 +1,9 @@
 # werewolf
+
+*** OUT OF DATE *** 
+- 100518832 
+
+
 Random deck generator for the party game 'werewolf' 
 
 This script includes the following features:
