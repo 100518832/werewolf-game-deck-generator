@@ -78,7 +78,7 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
     
     roles = []
     for name in cards:
-        if name['name'] > 0 or name['name'] in forced_roles:
+        if name['limit'] > 0 or name['name'] in forced_roles:
             if name['name'] not in black_listed:
                 roles.append(name['name'])
 
