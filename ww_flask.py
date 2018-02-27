@@ -42,16 +42,76 @@ cards = [
         {'name':'minion',           'team':'bad',   'weight':-6,    'limit':1,      'des':''},
         ]
 
-
-card_inclusions = {'villager':[['None']], 'witch':[['None']], 'pacifist':[['None']], 'p.i':[[]], 'prince':[[]], 'seer':[[]], 'spellcaster':[[]], 'tough_guy':[[]], 'lycan':[[]], 'mason':[['mason']], 'old_hag':[[]], 'mayor':[['villager']], 'troublemaker':[[]],
-                       'village_idiot':[['None']], 'apprentice_seer':[['seer'],['aura_seer']], 'aura_seer':[[]], 'bodyguard':[[]], 'cult_leader':[[]], 'cupid':[[]], 'diseased':[[]], 'doppelganger':[[]], 'drunk':[[]], 'ghost':[[]], 'hunter':[[]],
-                'werewolf':[[]], 'wolf_cub':[['werewolf'],['lone_wolf']], 'sorceress':[['seer']], 'tanner':[[]], 'vampire':[[]], 'cursed':[[]], 'lone_wolf':[['werewolf']], 'minion':[[]]
+card_inclusions = {
+                   'villager':        [['None']], 
+                   'witch':           [['None']], 
+                   'pacifist':        [['None']], 
+                   'p.i':             [[]], 
+                   'prince':          [[]], 
+                   'seer':            [[]], 
+                   'spellcaster':     [[]], 
+                   'tough_guy':       [[]], 
+                   'lycan':           [[]], 
+                   'mason':           [['mason']], 
+                   'old_hag':         [[]], 
+                   'mayor':           [['villager']], 
+                   'troublemaker':    [[]],
+                   'village_idiot':   [['None']], 
+                   'apprentice_seer': [['seer'],['aura_seer']], 
+                   'aura_seer':       [[]], 
+                   'bodyguard':       [[]], 
+                   'cult_leader':     [[]], 
+                   'cupid':           [[]], 
+                   'diseased':        [[]], 
+                   'doppelganger':    [[]], 
+                   'drunk':           [[]], 
+                   'ghost':           [[]], 
+                   'hunter':          [[]],
+                   'werewolf':        [[]], 
+                   'wolf_cub':        [['werewolf'],['lone_wolf']], 
+                   'sorceress':       [['seer']], 
+                   'tanner':          [[]], 
+                   'vampire':         [[]], 
+                   'cursed':          [[]], 
+                   'lone_wolf':       [['werewolf']], 
+                   'minion':          [[]]
                 }
 
-card_exclusions = {'villager':[], 'witch':[], 'pacifist':['village_idiot'], 'p.i':['seer','apprentice_seer','aura_seer'], 'prince':['mayor'], 'seer':['aura_seer','p.i'], 'spellcaster':[], 'tough_guy':[], 'lycan':[], 'mason':[], 'old_hag':[], 'mayor':['prince','cult_leader'], 'troublemaker':[],
-                       'village_idiot':['pacifist'], 'apprentice_seer':['aura_seer', 'p.i','sorceress'], 'aura_seer':['seer','apprentice_seer','p.i'], 'bodyguard':[], 'cult_leader':['mayor','prince'], 'cupid':[], 'diseased':['vampire'], 'doppelganger':[], 'drunk':[], 'ghost':[], 'hunter':[],
-                'werewolf':['vampire'], 'wolf_cub':['vampire'], 'sorceress':['aura_seer'], 'tanner':[], 'vampire':['werewolf','wolf_cub','cursed','diseased','minion'], 'cursed':['vampire'], 'lone_wolf':[], 'minion':['vampire']
+card_exclusions = {
+                   'villager':[], 
+                    'witch':[], 
+                    'pacifist':['village_idiot'], 
+                    'p.i':['seer','apprentice_seer','aura_seer'], 
+                    'prince':['mayor'], 
+                    'seer':['aura_seer','p.i'], 
+                    'spellcaster':[], 
+                    'tough_guy':[], 
+                    'lycan':[], 
+                    'mason':[], 
+                    'old_hag':[], 
+                    'mayor':['prince','cult_leader'], 
+                    'troublemaker':[],
+                    'village_idiot':['pacifist'], 
+                    'apprentice_seer':['aura_seer', 'p.i','sorceress'], 
+                    'aura_seer':['seer','apprentice_seer','p.i'], 
+                    'bodyguard':[], 
+                    'cult_leader':['mayor','prince'], 
+                    'cupid':[], 
+                    'diseased':['vampire'], 
+                    'doppelganger':[], 
+                    'drunk':[], 
+                    'ghost':[], 
+                    'hunter':[],
+                    'werewolf':['vampire'], 
+                    'wolf_cub':['vampire'], 
+                    'sorceress':['aura_seer'], 
+                    'tanner':[], 
+                    'vampire':['werewolf','wolf_cub','cursed','diseased','minion'], 
+                    'cursed':['vampire'], 
+                    'lone_wolf':[], 
+                    'minion':['vampire']
                 }
+
 
 @app.route('/deck/<int:n_people>/<int:target>/<int:threshold>/<string:forced_roles>/<string:black_listed>')
 def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
