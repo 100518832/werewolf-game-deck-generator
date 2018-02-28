@@ -1,45 +1,45 @@
+import random
+import json
 
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, abort, request
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 CORS(app)
-import random
 
 cards = [
-        {'name':'villager',         'team':'good',  'weight':1,     'limit':12,     'des':''},
-        {'name':'witch',            'team':'good',  'weight':4,     'limit':1,      'des':''},
-        {'name':'pacifist',         'team':'good',  'weight':-1,    'limit':1,      'des':''},
-        {'name':'p.i',              'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'prince',           'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'seer',             'team':'good',  'weight':7,     'limit':1,      'des':''},
-        {'name':'spellcaster',      'team':'good',  'weight':1,     'limit':1,      'des':''},
-        {'name':'tough_guy',        'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'lycan',            'team':'good',  'weight':-1,    'limit':1,      'des':''},
-        {'name':'mason',            'team':'good',  'weight':2,     'limit':3,      'des':''},
-        {'name':'old_hag',          'team':'good',  'weight':1,     'limit':1,      'des':''},
-        {'name':'mayor',            'team':'good',  'weight':2,     'limit':1,      'des':''},
-        {'name':'troublemaker',     'team':'good',  'weight':-3,    'limit':1,      'des':''},
-        {'name':'village_idiot',    'team':'good',  'weight':2,     'limit':1,      'des':''},
-        {'name':'apprentice_seer',  'team':'good',  'weight':4,     'limit':1,      'des':''},
-        {'name':'aura_seer',        'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'bodyguard',        'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'cult_leader',      'team':'good',  'weight':1,     'limit':1,      'des':''},
-        {'name':'cupid',            'team':'good',  'weight':-3,    'limit':1,      'des':''},
-        {'name':'diseased',         'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'doppelganger',     'team':'good',  'weight':-2,    'limit':1,      'des':''},
-        {'name':'drunk',            'team':'good',  'weight':4,     'limit':1,      'des':''},
-        {'name':'ghost',            'team':'good',  'weight':2,     'limit':1,      'des':''},
-        {'name':'hunter',           'team':'good',  'weight':3,     'limit':1,      'des':''},
-        {'name':'werewolf',         'team':'bad',   'weight':-6,    'limit':8,      'des':''},
-        {'name':'wolf_cub',         'team':'bad',   'weight':-8,    'limit':1,      'des':''},
-        {'name':'sorceress',        'team':'bad',   'weight':-3,    'limit':1,      'des':''},
-        {'name':'tanner',           'team':'bad',   'weight':-2,    'limit':1,      'des':''},
-        {'name':'vampire',          'team':'bad',   'weight':-7,    'limit':4,      'des':''},
-        {'name':'cursed',           'team':'bad',   'weight':-3,    'limit':1,      'des':''},
-        {'name':'lone_wolf',        'team':'bad',   'weight':-5,    'limit':1,      'des':''},
-        {'name':'minion',           'team':'bad',   'weight':-6,    'limit':1,      'des':''},
+        {'name': 'villager',         'team': 'good',  'weight': 1,     'limit': 12,     'des': ''},
+        {'name': 'witch',            'team': 'good',  'weight': 4,     'limit': 1,      'des': ''},
+        {'name': 'pacifist',         'team': 'good',  'weight': -1,    'limit': 1,      'des': ''},
+        {'name': 'p.i',              'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'prince',           'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'seer',             'team': 'good',  'weight': 7,     'limit': 1,      'des': ''},
+        {'name': 'spellcaster',      'team': 'good',  'weight': 1,     'limit': 1,      'des': ''},
+        {'name': 'tough_guy',        'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'lycan',            'team': 'good',  'weight': -1,    'limit': 1,      'des': ''},
+        {'name': 'mason',            'team': 'good',  'weight': 2,     'limit': 3,      'des': ''},
+        {'name': 'old_hag',          'team': 'good',  'weight': 1,     'limit': 1,      'des': ''},
+        {'name': 'mayor',            'team': 'good',  'weight': 2,     'limit': 1,      'des': ''},
+        {'name': 'troublemaker',     'team': 'good',  'weight': -3,    'limit': 1,      'des': ''},
+        {'name': 'village_idiot',    'team': 'good',  'weight': 2,     'limit': 1,      'des': ''},
+        {'name': 'apprentice_seer',  'team': 'good',  'weight': 4,     'limit': 1,      'des': ''},
+        {'name': 'aura_seer',        'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'bodyguard',        'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'cult_leader',      'team': 'good',  'weight': 1,     'limit': 1,      'des': ''},
+        {'name': 'cupid',            'team': 'good',  'weight': -3,    'limit': 1,      'des': ''},
+        {'name': 'diseased',         'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'doppelganger',     'team': 'good',  'weight': -2,    'limit': 1,      'des': ''},
+        {'name': 'drunk',            'team': 'good',  'weight': 4,     'limit': 1,      'des': ''},
+        {'name': 'ghost',            'team': 'good',  'weight': 2,     'limit': 1,      'des': ''},
+        {'name': 'hunter',           'team': 'good',  'weight': 3,     'limit': 1,      'des': ''},
+        {'name': 'werewolf',         'team': 'bad',   'weight': -6,    'limit': 8,      'des': ''},
+        {'name': 'wolf_cub',         'team': 'bad',   'weight': -8,    'limit': 1,      'des': ''},
+        {'name': 'sorceress',        'team': 'bad',   'weight': -3,    'limit': 1,      'des': ''},
+        {'name': 'tanner',           'team': 'bad',   'weight': -2,    'limit': 1,      'des': ''},
+        {'name': 'vampire',          'team': 'bad',   'weight': -7,    'limit': 4,      'des': ''},
+        {'name': 'cursed',           'team': 'bad',   'weight': -3,    'limit': 1,      'des': ''},
+        {'name': 'lone_wolf',        'team': 'bad',   'weight': -5,    'limit': 1,      'des': ''},
+        {'name': 'minion',           'team': 'bad',   'weight': -6,    'limit': 1,      'des': ''},
         ]
 
 card_inclusions = {
@@ -57,7 +57,7 @@ card_inclusions = {
                    'mayor':           [['villager']], 
                    'troublemaker':    [[]],
                    'village_idiot':   [['None']], 
-                   'apprentice_seer': [['seer'],['aura_seer']], 
+                   'apprentice_seer': [['seer'], ['aura_seer']],
                    'aura_seer':       [[]], 
                    'bodyguard':       [[]], 
                    'cult_leader':     [[]], 
@@ -68,7 +68,7 @@ card_inclusions = {
                    'ghost':           [[]], 
                    'hunter':          [[]],
                    'werewolf':        [[]], 
-                   'wolf_cub':        [['werewolf'],['lone_wolf']], 
+                   'wolf_cub':        [['werewolf'], ['lone_wolf']],
                    'sorceress':       [['seer']], 
                    'tanner':          [[]], 
                    'vampire':         [[]], 
@@ -81,21 +81,21 @@ card_exclusions = {
                    'villager':                  [], 
                     'witch':                    [], 
                     'pacifist':                 ['village_idiot'], 
-                    'p.i':                      ['seer','apprentice_seer','aura_seer'], 
+                    'p.i':                      ['seer', 'apprentice_seer', 'aura_seer'],
                     'prince':                   ['mayor'], 
-                    'seer':                     ['aura_seer','p.i'], 
+                    'seer':                     ['aura_seer', 'p.i'],
                     'spellcaster':              [], 
                     'tough_guy':                [], 
                     'lycan':                    [], 
                     'mason':                    [], 
                     'old_hag':                  [], 
-                    'mayor':                    ['prince','cult_leader'], 
+                    'mayor':                    ['prince', 'cult_leader'],
                     'troublemaker':             [],
                     'village_idiot':            ['pacifist'], 
-                    'apprentice_seer':          ['aura_seer', 'p.i','sorceress'], 
-                    'aura_seer':                ['seer','apprentice_seer','p.i'], 
+                    'apprentice_seer':          ['aura_seer', 'p.i', 'sorceress'],
+                    'aura_seer':                ['seer', 'apprentice_seer', 'p.i'],
                     'bodyguard':                [], 
-                    'cult_leader':              ['mayor','prince'], 
+                    'cult_leader':              ['mayor', 'prince'],
                     'cupid':                    [], 
                     'diseased':                 ['vampire'], 
                     'doppelganger':             [], 
@@ -106,29 +106,38 @@ card_exclusions = {
                     'wolf_cub':                 ['vampire'], 
                     'sorceress':                ['aura_seer'], 
                     'tanner':                   [], 
-                    'vampire':                  ['werewolf','wolf_cub','cursed','diseased','minion'], 
+                    'vampire':                  ['werewolf', 'wolf_cub', 'cursed', 'diseased', 'minion'],
                     'cursed':                   ['vampire'], 
                     'lone_wolf':                [], 
                     'minion':                   ['vampire']
                 }
 
 
-@app.route('/deck/<int:n_people>/<int:target>/<int:threshold>/<string:forced_roles>/<string:black_listed>')
-def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
+@app.route('/deck/<int:n_people>/<int:target>/<int:threshold>', methods=['GET','POST'])
+def card_selection(n_people, target, threshold):
 
-    global card_exclusions, card_inclusions, card_limits, card_points, cards
+    global card_exclusions, card_inclusions, cards
 
-    forced_roles = forced_roles.split(' ')
-    black_listed = black_listed.split(' ')
+    request_body = request.get_json()
+
+    if not request.json:
+        abort(400)
+
+    forced_roles = request_body['forced_roles']
+    black_listed = request_body['black_listed']
     
     roles = []
+
     for name in cards:
+
         if name['limit'] > 0 or name['name'] in forced_roles:
+
             if name['name'] not in black_listed:
+
                 roles.append(name['name'])
 
     deck_points = None
-    target_range = list(range(target-threshold,target+threshold+1))
+    target_range = list(range(target-threshold, target+threshold+1))
 
     while deck_points not in target_range:
 
@@ -139,29 +148,33 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
             
             deck.append(forced_role)
 
-        while (len(deck) < n_people):
+        while len(deck) < n_people:
 
             role_error = False
             role = random.choice(roles)
             
             role_info = {}
             
-            for a in range(0,len(cards)):
+            for a in range(0, len(cards)):
+
                 if cards[a]['name'] == role:
+
                     role_info = cards[a]
-                    
-            
+
             if role in black_listed:
+
                 continue
 
-            if deck.count(role) == role_info['limit']: # if the # unique roles in the deck are equal too the role limit, then we can can not add this card
+            if deck.count(role) == role_info['limit']:
 
                 role_error = True
 
             if role_error is True:
+
                 continue
 
-            for exclusion in card_exclusions[role]: # exclusion is a single role
+            for exclusion in card_exclusions[role]:
+
                 if exclusion in deck:
 
                     role_error = True
@@ -169,16 +182,21 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
                     break
 
             if role_error is True:
+
                 continue
 
-            for inclusions in card_inclusions[role]: # inclusions is a nested list, card_inclusions[role] is a list of lists
-                if 'None' in inclusions: # if this role does not require any other cards to be added, it can be appeneded to the deck
+            for inclusions in card_inclusions[role]:
+
+                if 'None' in inclusions:
+
                     break
 
                 absent_inclusions = []
 
-                for inclusion in inclusions: # inclusion is a single role that must come with the selected role, and inclusions in a list of roles
+                for inclusion in inclusions:
+
                     if inclusion in deck:
+
                         continue
 
                     if inclusion not in deck:
@@ -186,7 +204,8 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
                         absent_inclusions.append(inclusion)
 
                 if len(absent_inclusions) + len(deck) + 1 <= n_people:
-                    for a in absent_inclusions: # a is a role
+
+                    for a in absent_inclusions:
 
                         deck.append(a)
 
@@ -197,13 +216,17 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
                     role_error = True
 
             if role_error is True:
+
                 continue
 
             deck.append(role)
             
-            for b in range(0,len(deck)):
-                for c in range(0,len(cards)):
+            for b in range(0, len(deck)):
+
+                for c in range(0, len(cards)):
+
                     if deck[b] == cards[c]['name']:
+
                         deck_points = deck_points + cards[c]['weight']
 
     return jsonify(deck)
