@@ -1,11 +1,68 @@
 import random
 import json
 
-from flask import Flask, jsonify, abort, request
+from Room import Room
+import ww
+from flask import Flask, jsonify, abort, request, render_template
 from flask_cors import CORS, cross_origin
+from flask_socketio import SocketIO, send, join_room, leave_room
 
 app = Flask(__name__)
 CORS(app)
+socketio = SocketIO(app)
+
+@socketio.on('message')
+def handleMessage(msg):
+	print('Message: ' + msg)
+	send(msg, broadcast=True)
+
+@socketio.on('join')
+def join(data):
+	username = data['username']
+	roomName = data['room']
+
+	for room in currentRooms:
+		if roomName == room.name:
+			join_room(roomName)
+			room.addMember(request.sid,username)
+			send(username + ' has entered the room.', room=roomName)
+			return
+	send(username + ' tried to enter a invalid room', broadcast=True)
+
+@socketio.on('modJoin')
+def modJoin(data):
+	room = Room(data['name'] + str(random.randint(1,999)),request.sid)
+	currentRooms.append(room)
+	join_room(room.name)
+	send(data['name']+ ' has created the room ' + room.name, broadcast=True)
+
+@socketio.on('genDeck')
+def genDeck(data):
+	for room in currentRooms:
+		if room.isOwner(request.sid):
+			selected = ww.card_selection(len(room.players),0,5,[],[],room.players)
+			send(str(selected), room=request.sid)
+			for key,value in selected.items():
+				send("Your role is:" + value,room=key)
+
+
+@socketio.on('disconnect')
+def disconnect():
+	for room in currentRooms:
+		if room.owner == request.sid:
+			send(room.name+" has been closed", broadcast=True)
+			currentRooms.remove(room)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+if __name__ =='__main__':
+
+    socketio.run(app)
+
+#Will contain a object containing the name of the room and a list of players
+currentRooms = []
 
 cards = [
         {'name': 'villager',         'team': 'good',  'weight': 1,     'limit': 12,     'des': ''},
@@ -43,72 +100,72 @@ cards = [
         ]
 
 card_inclusions = {
-                   'villager':        [['None']], 
-                   'witch':           [['None']], 
-                   'pacifist':        [['None']], 
-                   'p.i':             [[]], 
-                   'prince':          [[]], 
-                   'seer':            [[]], 
-                   'spellcaster':     [[]], 
-                   'tough_guy':       [[]], 
-                   'lycan':           [[]], 
-                   'mason':           [['mason']], 
-                   'old_hag':         [[]], 
-                   'mayor':           [['villager']], 
+                   'villager':        [['None']],
+                   'witch':           [['None']],
+                   'pacifist':        [['None']],
+                   'p.i':             [[]],
+                   'prince':          [[]],
+                   'seer':            [[]],
+                   'spellcaster':     [[]],
+                   'tough_guy':       [[]],
+                   'lycan':           [[]],
+                   'mason':           [['mason']],
+                   'old_hag':         [[]],
+                   'mayor':           [['villager']],
                    'troublemaker':    [[]],
-                   'village_idiot':   [['None']], 
+                   'village_idiot':   [['None']],
                    'apprentice_seer': [['seer'], ['aura_seer']],
-                   'aura_seer':       [[]], 
-                   'bodyguard':       [[]], 
-                   'cult_leader':     [[]], 
-                   'cupid':           [[]], 
-                   'diseased':        [[]], 
-                   'doppelganger':    [[]], 
-                   'drunk':           [[]], 
-                   'ghost':           [[]], 
+                   'aura_seer':       [[]],
+                   'bodyguard':       [[]],
+                   'cult_leader':     [[]],
+                   'cupid':           [[]],
+                   'diseased':        [[]],
+                   'doppelganger':    [[]],
+                   'drunk':           [[]],
+                   'ghost':           [[]],
                    'hunter':          [[]],
-                   'werewolf':        [[]], 
+                   'werewolf':        [[]],
                    'wolf_cub':        [['werewolf'], ['lone_wolf']],
-                   'sorceress':       [['seer']], 
-                   'tanner':          [[]], 
-                   'vampire':         [[]], 
-                   'cursed':          [[]], 
-                   'lone_wolf':       [['werewolf']], 
+                   'sorceress':       [['seer']],
+                   'tanner':          [[]],
+                   'vampire':         [[]],
+                   'cursed':          [[]],
+                   'lone_wolf':       [['werewolf']],
                    'minion':          [[]]
                 }
 
 card_exclusions = {
-                   'villager':                  [], 
-                    'witch':                    [], 
-                    'pacifist':                 ['village_idiot'], 
+                   'villager':                  [],
+                    'witch':                    [],
+                    'pacifist':                 ['village_idiot'],
                     'p.i':                      ['seer', 'apprentice_seer', 'aura_seer'],
-                    'prince':                   ['mayor'], 
+                    'prince':                   ['mayor'],
                     'seer':                     ['aura_seer', 'p.i'],
-                    'spellcaster':              [], 
-                    'tough_guy':                [], 
-                    'lycan':                    [], 
-                    'mason':                    [], 
-                    'old_hag':                  [], 
+                    'spellcaster':              [],
+                    'tough_guy':                [],
+                    'lycan':                    [],
+                    'mason':                    [],
+                    'old_hag':                  [],
                     'mayor':                    ['prince', 'cult_leader'],
                     'troublemaker':             [],
-                    'village_idiot':            ['pacifist'], 
+                    'village_idiot':            ['pacifist'],
                     'apprentice_seer':          ['aura_seer', 'p.i', 'sorceress'],
                     'aura_seer':                ['seer', 'apprentice_seer', 'p.i'],
-                    'bodyguard':                [], 
+                    'bodyguard':                [],
                     'cult_leader':              ['mayor', 'prince'],
-                    'cupid':                    [], 
-                    'diseased':                 ['vampire'], 
-                    'doppelganger':             [], 
-                    'drunk':                    [], 
-                    'ghost':                    [], 
+                    'cupid':                    [],
+                    'diseased':                 ['vampire'],
+                    'doppelganger':             [],
+                    'drunk':                    [],
+                    'ghost':                    [],
                     'hunter':                   [],
-                    'werewolf':                 ['vampire'], 
-                    'wolf_cub':                 ['vampire'], 
-                    'sorceress':                ['aura_seer'], 
-                    'tanner':                   [], 
+                    'werewolf':                 ['vampire'],
+                    'wolf_cub':                 ['vampire'],
+                    'sorceress':                ['aura_seer'],
+                    'tanner':                   [],
                     'vampire':                  ['werewolf', 'wolf_cub', 'cursed', 'diseased', 'minion'],
-                    'cursed':                   ['vampire'], 
-                    'lone_wolf':                [], 
+                    'cursed':                   ['vampire'],
+                    'lone_wolf':                [],
                     'minion':                   ['vampire']
                 }
 
@@ -125,7 +182,7 @@ def card_selection(n_people, target, threshold):
 
     forced_roles = request_body['forced_roles']
     black_listed = request_body['black_listed']
-    
+
     roles = []
 
     for name in cards:
@@ -143,18 +200,18 @@ def card_selection(n_people, target, threshold):
 
         deck = []
         deck_points = 0
-        
+
         for forced_role in forced_roles:
-            
+
             deck.append(forced_role)
 
         while len(deck) < n_people:
 
             role_error = False
             role = random.choice(roles)
-            
+
             role_info = {}
-            
+
             for a in range(0, len(cards)):
 
                 if cards[a]['name'] == role:
@@ -220,7 +277,7 @@ def card_selection(n_people, target, threshold):
                 continue
 
             deck.append(role)
-            
+
             for b in range(0, len(deck)):
 
                 for c in range(0, len(cards)):
@@ -230,7 +287,6 @@ def card_selection(n_people, target, threshold):
                         deck_points = deck_points + cards[c]['weight']
 
     return jsonify(deck)
-
 
 @app.route('/roles')
 def roles():

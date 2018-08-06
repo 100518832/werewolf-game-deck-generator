@@ -1,4 +1,5 @@
 import random
+import struct
 
 cards = [
         {'name':'villager',         'team':'good',  'weight':1,     'limit':12,     'des':''},
@@ -36,72 +37,72 @@ cards = [
         ]
 
 card_inclusions = {
-                   'villager':        [['None']], 
-                   'witch':           [['None']], 
-                   'pacifist':        [['None']], 
-                   'p.i':             [[]], 
-                   'prince':          [[]], 
-                   'seer':            [[]], 
-                   'spellcaster':     [[]], 
-                   'tough_guy':       [[]], 
-                   'lycan':           [[]], 
-                   'mason':           [['mason']], 
-                   'old_hag':         [[]], 
-                   'mayor':           [['villager']], 
+                   'villager':        [['None']],
+                   'witch':           [['None']],
+                   'pacifist':        [['None']],
+                   'p.i':             [[]],
+                   'prince':          [[]],
+                   'seer':            [[]],
+                   'spellcaster':     [[]],
+                   'tough_guy':       [[]],
+                   'lycan':           [[]],
+                   'mason':           [['mason']],
+                   'old_hag':         [[]],
+                   'mayor':           [['villager']],
                    'troublemaker':    [[]],
-                   'village_idiot':   [['None']], 
-                   'apprentice_seer': [['seer'],['aura_seer']], 
-                   'aura_seer':       [[]], 
-                   'bodyguard':       [[]], 
-                   'cult_leader':     [[]], 
-                   'cupid':           [[]], 
-                   'diseased':        [[]], 
-                   'doppelganger':    [[]], 
-                   'drunk':           [[]], 
-                   'ghost':           [[]], 
+                   'village_idiot':   [['None']],
+                   'apprentice_seer': [['seer'],['aura_seer']],
+                   'aura_seer':       [[]],
+                   'bodyguard':       [[]],
+                   'cult_leader':     [[]],
+                   'cupid':           [[]],
+                   'diseased':        [[]],
+                   'doppelganger':    [[]],
+                   'drunk':           [[]],
+                   'ghost':           [[]],
                    'hunter':          [[]],
-                   'werewolf':        [[]], 
-                   'wolf_cub':        [['werewolf'],['lone_wolf']], 
-                   'sorceress':       [['seer']], 
-                   'tanner':          [[]], 
-                   'vampire':         [[]], 
-                   'cursed':          [[]], 
-                   'lone_wolf':       [['werewolf']], 
+                   'werewolf':        [[]],
+                   'wolf_cub':        [['werewolf'],['lone_wolf']],
+                   'sorceress':       [['seer']],
+                   'tanner':          [[]],
+                   'vampire':         [[]],
+                   'cursed':          [[]],
+                   'lone_wolf':       [['werewolf']],
                    'minion':          [[]]
                 }
 
 card_exclusions = {
-                   'villager':[], 
-                    'witch':[], 
-                    'pacifist':['village_idiot'], 
-                    'p.i':['seer','apprentice_seer','aura_seer'], 
-                    'prince':['mayor'], 
-                    'seer':['aura_seer','p.i'], 
-                    'spellcaster':[], 
-                    'tough_guy':[], 
-                    'lycan':[], 
-                    'mason':[], 
-                    'old_hag':[], 
-                    'mayor':['prince','cult_leader'], 
+                   'villager':[],
+                    'witch':[],
+                    'pacifist':['village_idiot'],
+                    'p.i':['seer','apprentice_seer','aura_seer'],
+                    'prince':['mayor'],
+                    'seer':['aura_seer','p.i'],
+                    'spellcaster':[],
+                    'tough_guy':[],
+                    'lycan':[],
+                    'mason':[],
+                    'old_hag':[],
+                    'mayor':['prince','cult_leader'],
                     'troublemaker':[],
-                    'village_idiot':['pacifist'], 
-                    'apprentice_seer':['aura_seer', 'p.i','sorceress'], 
-                    'aura_seer':['seer','apprentice_seer','p.i'], 
-                    'bodyguard':[], 
-                    'cult_leader':['mayor','prince'], 
-                    'cupid':[], 
-                    'diseased':['vampire'], 
-                    'doppelganger':[], 
-                    'drunk':[], 
-                    'ghost':[], 
+                    'village_idiot':['pacifist'],
+                    'apprentice_seer':['aura_seer', 'p.i','sorceress'],
+                    'aura_seer':['seer','apprentice_seer','p.i'],
+                    'bodyguard':[],
+                    'cult_leader':['mayor','prince'],
+                    'cupid':[],
+                    'diseased':['vampire'],
+                    'doppelganger':[],
+                    'drunk':[],
+                    'ghost':[],
                     'hunter':[],
-                    'werewolf':['vampire'], 
-                    'wolf_cub':['vampire'], 
-                    'sorceress':['aura_seer'], 
-                    'tanner':[], 
-                    'vampire':['werewolf','wolf_cub','cursed','diseased','minion'], 
-                    'cursed':['vampire'], 
-                    'lone_wolf':[], 
+                    'werewolf':['vampire'],
+                    'wolf_cub':['vampire'],
+                    'sorceress':['aura_seer'],
+                    'tanner':[],
+                    'vampire':['werewolf','wolf_cub','cursed','diseased','minion'],
+                    'cursed':['vampire'],
+                    'lone_wolf':[],
                     'minion':['vampire']
                 }
 
@@ -112,7 +113,7 @@ forced_roles = []
 black_listed = []
 
 
-def card_selection(n_people, target, threshold, forced_roles, black_listed): # argv takes optional string arguments for specified cards we want
+def card_selection(n_people, target, threshold, forced_roles, black_listed, players): # argv takes optional string arguments for specified cards we want
 
     global card_exclusions, card_inclusions, card_limits, card_points, cards
 
@@ -129,23 +130,23 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
 
         deck = []
         deck_points = 0
-        
+
         for forced_role in forced_roles:
-            
+
             deck.append(forced_role)
 
         while (len(deck) < n_people):
 
             role_error = False
             role = random.choice(roles)
-            
+
             role_info = {}
-            
+
             for a in range(0,len(cards)):
                 if cards[a]['name'] == role:
                     role_info = cards[a]
-                    
-            
+
+
             if role in black_listed:
                 continue
 
@@ -195,15 +196,15 @@ def card_selection(n_people, target, threshold, forced_roles, black_listed): # a
                 continue
 
             deck.append(role)
-            
+
             for b in range(0,len(deck)):
                 for c in range(0,len(cards)):
                     if deck[b] == cards[c]['name']:
                         deck_points = deck_points + cards[c]['weight']
 
-    return print(deck)
+    return dict(zip(players,deck))
 
-  
+
 def roles():
 
     global cards
