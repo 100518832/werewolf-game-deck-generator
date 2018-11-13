@@ -1,19 +1,15 @@
 # werewolf
 
-*** OUT OF DATE *** 
-- 100518832 
-
-
 Random deck generator for the party game 'werewolf' 
 
 This script includes the following features:
 1) A variable, target , which corresponds to the game's point system (the sum of points should equal 0 in a deck)
 ```
-n_people = 10 # variable
+target = 0 # variable
 ```
 2) A variable, n_people, which corresponds to the number of roles to be dealt, or number of cards in the deck
 ```
-target = 0 # variable
+n_people = 10 # variable
 ```
 3) A variable, threshold, which will control the range at which an 'acceptable' deck target value is reached
 ```
