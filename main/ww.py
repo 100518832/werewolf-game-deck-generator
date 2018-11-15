@@ -237,9 +237,6 @@ class DeckGenerator:
         elif len(deck) != n_people:
             raise IndexError('Length, {}, for deck invalid. Length of deck must be equal to n_people'.format(len(deck)))
 
-        elif sum([card['weight'] for card in self.cards if card['name'] in deck]) not in list(range(target-threshold, target+threshold+1)):
-            raise ValueError('Point value of deck does not fall within the target range.')
-
         return deck
 
 
