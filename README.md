@@ -128,6 +128,6 @@ There are 3 dictionaries within the ww.py script:
             'minion': ['vampire']
         }
 ```
-The dict ```card_points```  contains a nested dictionary of good and bad roles, to define the teams. Every role card you wish to play with, or have, should be in this dictionary at some point (and the other 3 too). If you want to break up the roles into more teams; some ```bad``` roles are actually against each other ```bad``` roles (i.e, vampires vs werewolves, or lone wolf vs werewolves). This dictionary is used to keep track of all possible cards, and their point values for calculating the deck value.
+
 
 
